@@ -38,6 +38,10 @@ class HXLReader {
     $this->row_number++;
     $raw_data = $this->_read_source_row();
 
+    if ($raw_data == null) {
+      return null;
+    }
+
     $row = array();
 
     $col_number = -1;
@@ -47,16 +51,16 @@ class HXLReader {
         array_push($row, array(
           'hxl_tag' => $this->headers[$i],
           'content' => $raw_data[$i],
-          'source_col_number' => $i,
           'col_number' => $col_number,
+          'source_col_number' => $i,
         ));
       }
     }
 
     return array(
-      'source_row_number' => $this->source_row_number,
-      'row_number' => $this->row_number,
       'data' => $row,
+      'row_number' => $this->row_number,
+      'source_row_number' => $this->source_row_number,
     );
 
   }
