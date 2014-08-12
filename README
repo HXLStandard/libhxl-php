@@ -16,10 +16,13 @@ USAGE
   $hxl = new HXLReader($input);
 
   foreach ($hxl as $row) {
+    printf("Row %d:\n", $row->row_number);
     foreach ($row->data as $value) {
-      printf("%s=%s\n", $value->header->tag, $value->content);
+      printf(" %s=%s\n", $value->header->tag, $value->content);
     }
   }
+
+  fclose($input);
 
 
 REQUIREMENTS
