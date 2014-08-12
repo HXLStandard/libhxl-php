@@ -24,6 +24,17 @@ class HXLRow {
 }
 
 class HXLValue {
+  public $header;
+  public $content;
+  public $col_number;
+  public $source_col_number;
+
+  public function __construct($header, $content, $col_number = null, $source_col_number = null) {
+    $this->header = $header;
+    $this->content = $content;
+    $this->col_number = $col_number;
+    $this->source_col_number = $source_col_number;
+  }
 }
 
 /**
@@ -71,11 +82,11 @@ class HXLReader {
     foreach ($raw_data as $i => $content) {
       if (@$this->headers[$i]) {
         $col_number++;
-        array_push($data, array(
-          'hxl_tag' => $this->headers[$i],
-          'content' => $raw_data[$i],
-          'col_number' => $col_number,
-          'source_col_number' => $i,
+        array_push($data, new HXLValue(
+          $this->headers[$i],
+          $raw_data[$i],
+          $col_number,
+          $i
         ));
       }
     }
