@@ -42,12 +42,14 @@ class HXLValue {
  *
  * Started by David Megginson, August 2014.
  */
-class HXLReader {
+class HXLReader implements Iterator {
 
   private $input;
   private $headers;
   private $source_row_number = -1;
   private $row_number = -1;
+
+  private $current_row = null;
 
   /**
    * Public constructor.
@@ -56,6 +58,34 @@ class HXLReader {
    */
   function __construct($input) {
     $this->input = $input;
+  }
+
+  //
+  // Methods to implement the Iterator interface
+  //
+
+  public function current() {
+    return $this->current_row;
+  }
+
+  public function key() {
+    return $this->row_number;
+  }
+
+  public function next() {
+    $this->current_row = $this->read();
+  }
+
+  public function rewind() {
+    if ($this->row_number > -1) {
+      throw new Exception("Cannot rewind the HXL input stream.");
+    } else {
+      $this->next();
+    }
+  }
+
+  public function valid() {
+    return ($this->current_row != null);
   }
 
   /**

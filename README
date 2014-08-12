@@ -15,9 +15,9 @@ USAGE
   $input = fopen('MyFile.csv', 'r');
   $hxl = new HXLReader($input);
 
-  while ($row = $hxl->read()) {
-    foreach ($row['data'] as $value) {
-      printf("%s=%s\n", $value['hxl_tag'], $value['content']);
+  foreach ($hxl as $row) {
+    foreach ($row->data as $value) {
+      printf("%s=%s\n", $value->header->tag, $value->content);
     }
   }
 
