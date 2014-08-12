@@ -1,5 +1,31 @@
 <?php
 
+class HXLHeader {
+  public $tag;
+  public $lang;
+
+  public function __construct($tag, $lang = null) {
+    $this->tag = $tag;
+    $this->lang = $lang;
+  }
+
+}
+
+class HXLRow {
+  public $data;
+  public $row_number;
+  public $source_row_number;
+
+  public function __construct($data, $row_number = null, $source_row_number = null) {
+    $this->data = $data;
+    $this->row_number = $row_number;
+    $this->source_row_number = $source_row_number;
+  }
+}
+
+class HXLValue {
+}
+
 /**
  * Read HXL data from a CSV file.
  *
@@ -8,11 +34,8 @@
 class HXLReader {
 
   private $input;
-
   private $headers;
-
   private $source_row_number = -1;
-
   private $row_number = -1;
 
   /**
@@ -42,13 +65,13 @@ class HXLReader {
       return null;
     }
 
-    $row = array();
+    $data = array();
 
     $col_number = -1;
     foreach ($raw_data as $i => $content) {
       if (@$this->headers[$i]) {
         $col_number++;
-        array_push($row, array(
+        array_push($data, array(
           'hxl_tag' => $this->headers[$i],
           'content' => $raw_data[$i],
           'col_number' => $col_number,
@@ -57,12 +80,7 @@ class HXLReader {
       }
     }
 
-    return array(
-      'data' => $row,
-      'row_number' => $this->row_number,
-      'source_row_number' => $this->source_row_number,
-    );
-
+    return new HXLRow($data, $this->row_number, $this->source_row_number);
   }
 
   private function _read_source_row() {
@@ -84,14 +102,17 @@ class HXLReader {
     $seen_header = false;
     $headers = array();
 
-    foreach ($raw_data as $header) {
-      $header = trim($header);
-      if ($header) {
-        if (self::_is_hashtag($header)) {
+    foreach ($raw_data as $s) {
+      $s = trim($s);
+      if ($s) {
+        $header = self::_parse_hashtag($s);
+        if ($header) {
           $seen_header = true;
         } else {
           return null;
         }
+      } else {
+        $header = null;
       }
       array_push($headers, $header);
     }
@@ -103,8 +124,13 @@ class HXLReader {
     }
   }
 
-  private static function _is_hashtag($s) {
-    return preg_match('/^#[a-zA-z0-9_]+/', $s);
+  private static function _parse_hashtag($s) {
+    $matches = array();
+    if (preg_match('/^(#[a-zA-z0-9_]+)(?:\/([a-zA-Z]{2}))?/', $s, $matches)) {
+      return new HXLHeader($matches[1], @$matches[2]);
+    } else {
+      return false;
+    }
   }
 
 }

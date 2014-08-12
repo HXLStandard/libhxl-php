@@ -21,10 +21,10 @@ class HXLReaderTest extends PHPUnit_Framework_TestCase {
     $row = $reader->read();
     $this->assertNotNull($row);
 
-    $this->assertEquals(0, $row['row_number']);
-    $this->assertEquals(2, $row['source_row_number']);
+    $this->assertEquals(0, $row->row_number);
+    $this->assertEquals(2, $row->source_row_number);
 
-    return $row['data'];
+    return $row->data;
   }
 
   /**
@@ -40,7 +40,7 @@ class HXLReaderTest extends PHPUnit_Framework_TestCase {
    * @depends testData
    */
   public function testTag($value) {
-    $this->assertEquals('#sector', $value['hxl_tag']);
+    $this->assertEquals('#sector', $value['hxl_tag']->tag);
   }
 
   /**
