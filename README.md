@@ -3,12 +3,12 @@
 Started by David Megginson, August 2014
 
 
-## DESCRIPTION
+## Description
 
 PHP5 library for parsing HXL-tagged data.  For more information about HXL, see http://docs.hdx.rwlabs.org/hxl
 
 
-## USAGE
+## Usage
 
 ```php
 require_once('HXL/HXL.php');
@@ -26,7 +26,7 @@ foreach ($hxl as $row) {
 fclose($input);
 ```
 
-## REQUIREMENTS
+## Requirements
 
 * PHP5
 * PHPUnit to run unit tests.
