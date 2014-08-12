@@ -1,3 +1,3 @@
 #!/bin/sh
 
-phpunit tests/reader-tests.php
+phpunit tests/HXLReaderTest.php

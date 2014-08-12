@@ -15,6 +15,7 @@ class HXLReader implements Iterator {
   private $source_row_number = -1;
   private $row_number = -1;
 
+  private $last_header_row = null;
   private $current_row = null;
 
   /**
@@ -24,6 +25,46 @@ class HXLReader implements Iterator {
    */
   function __construct($input) {
     $this->input = $input;
+  }
+
+  //
+  // Public methods
+  //
+
+  /**
+   * Read a row of HXL data.
+   *
+   * @return A data structure describing the row, or null if input is finished.
+   * @exception If a row of HXL hashtags isn't found.
+   */
+  function read() {
+    if ($this->headers == null) {
+      $this->headers = $this->_read_headers($this->input);
+    }
+
+    $this->row_number++;
+    $raw_data = $this->_read_source_row();
+
+    if ($raw_data == null) {
+      return null;
+    }
+
+    $data = array();
+
+    $col_number = -1;
+    foreach ($raw_data as $i => $content) {
+      if (@$this->headers[$i]) {
+        $col_number++;
+        array_push($data, new HXLValue(
+          $this->headers[$i],
+          $raw_data[$i],
+          $col_number,
+          $i
+        ));
+      }
+    }
+
+    return new HXLRow($data, $this->row_number, $this->source_row_number);
   }
 
   //
@@ -70,44 +111,8 @@ class HXLReader implements Iterator {
   }
 
   //
-  // Public methods
+  // Private utility methods
   //
-
-  /**
-   * Read a row of HXL data.
-   *
-   * @return A data structure describing the row, or null if input is finished.
-   * @exception If a row of HXL hashtags isn't found.
-   */
-  function read() {
-    if ($this->headers == null) {
-      $this->headers = $this->_read_headers($this->input);
-    }
-
-    $this->row_number++;
-    $raw_data = $this->_read_source_row();
-
-    if ($raw_data == null) {
-      return null;
-    }
-
-    $data = array();
-
-    $col_number = -1;
-    foreach ($raw_data as $i => $content) {
-      if (@$this->headers[$i]) {
-        $col_number++;
-        array_push($data, new HXLValue(
-          $this->headers[$i],
-          $raw_data[$i],
-          $col_number,
-          $i
-        ));
-      }
-    }
-
-    return new HXLRow($data, $this->row_number, $this->source_row_number);
-  }
 
   /**
    * Read a row from the source document.
@@ -122,9 +127,11 @@ class HXLReader implements Iterator {
    */
   private function _read_headers() {
     while ($raw_data = $this->_read_source_row()) {
-      $headers = self::_try_header_row($raw_data);
+      $headers = $this->_try_header_row($raw_data);
       if ($headers != null) {
         return $headers;
+      } else {
+        $this->last_header_row = $raw_data;
       }
     }
     throw new Exception("HXL hashtag row not found");
@@ -133,27 +140,28 @@ class HXLReader implements Iterator {
   /**
    * Attempt to read a HXL header row in a source document.
    */
-  private static function _try_header_row($raw_data) {
+  private function _try_header_row($raw_data) {
     $seen_header = false;
-    $headers = array();
+    $columns = array();
 
-    foreach ($raw_data as $s) {
+    foreach ($raw_data as $i => $s) {
       $s = trim($s);
       if ($s) {
-        $header = self::_parse_hashtag($s);
-        if ($header) {
+        $column = self::_parse_hashtag($s);
+        if ($column) {
           $seen_header = true;
+          $column->source_text = $this->last_header_row[$i];
         } else {
           return null;
         }
       } else {
-        $header = null;
+        $column = null;
       }
-      array_push($headers, $header);
+      array_push($columns, $column);
     }
 
     if ($seen_header) {
-      return $headers;
+      return $columns;
     } else {
       return null;
     }

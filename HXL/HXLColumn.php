@@ -18,11 +18,21 @@ class HXLColumn {
   public $lang;
 
   /**
-   * Public constructor.
+   * The source text of the original header.
    */
-  public function __construct($tag, $lang = null) {
+  public $source_text;
+
+  /**
+   * Public constructor.
+   *
+   * @param $tag The HXL hashtag (including the initial '#')
+   * @param $lang The ISO 639 language code (defaults to null, for unspecified)
+   * @param $source_text The text of the original header (defaults to null, for unspecified)
+   */
+  public function __construct($tag, $lang = null, $source_text = null) {
     $this->tag = $tag;
     $this->lang = $lang;
+    $this->source_text = $source_text;
   }
 
 }
