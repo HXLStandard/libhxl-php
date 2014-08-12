@@ -1,73 +1,14 @@
 <?php
 
-class HXLHeader {
-  public $tag;
-  public $lang;
-
-  public function __construct($tag, $lang = null) {
-    $this->tag = $tag;
-    $this->lang = $lang;
-  }
-
-}
-
-class HXLRow implements Iterator {
-  public $data;
-  public $row_number;
-  public $source_row_number;
-  public $iterator_index = -1;
-
-  public function __construct($data, $row_number = null, $source_row_number = null) {
-    $this->data = $data;
-    $this->row_number = $row_number;
-    $this->source_row_number = $source_row_number;
-  }
-
-  //
-  // Methods to implement the Iterator interface
-  //
-
-  public function current() {
-    return $this->data[$this->iterator_index];
-  }
-
-  public function key() {
-    return $this->iterator_index;
-  }
-
-  public function next() {
-    $this->iterator_index++;
-    if ($this->iterator_index >= count($this->data)) {
-      $this->iterator_index = -1;
-    }
-  }
-
-  public function rewind() {
-    $this->iterator_index = 0;
-  }
-
-  public function valid() {
-    return ($this->iterator_index > -1);
-  }
-
-}
-
-class HXLValue {
-  public $header;
-  public $content;
-  public $col_number;
-  public $source_col_number;
-
-  public function __construct($header, $content, $col_number = null, $source_col_number = null) {
-    $this->header = $header;
-    $this->content = $content;
-    $this->col_number = $col_number;
-    $this->source_col_number = $source_col_number;
-  }
-}
+require_once(__DIR__ . '/HXLColumn.php');
+require_once(__DIR__ . '/HXLRow.php');
+require_once(__DIR__ . '/HXLValue.php');
 
 /**
  * Read HXL data from a CSV file.
+ *
+ * This is a one-time iterable class.  You can use it in a foreach
+ * expression, but you can't rewind and go through it again.
  *
  * Started by David Megginson, August 2014.
  */
@@ -93,18 +34,30 @@ class HXLReader implements Iterator {
   // Methods to implement the Iterator interface
   //
 
+  /**
+   * {@inheritDoc}
+   */
   public function current() {
     return $this->current_row;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function key() {
     return $this->row_number;
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function next() {
     $this->current_row = $this->read();
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function rewind() {
     if ($this->row_number > -1) {
       throw new Exception("Cannot rewind the HXL input stream.");
@@ -113,9 +66,16 @@ class HXLReader implements Iterator {
     }
   }
 
+  /**
+   * {@inheritDoc}
+   */
   public function valid() {
     return ($this->current_row != null);
   }
+
+  //
+  // Public methods
+  //
 
   /**
    * Read a row of HXL data.
@@ -153,11 +113,17 @@ class HXLReader implements Iterator {
     return new HXLRow($data, $this->row_number, $this->source_row_number);
   }
 
+  /**
+   * Read a row from the source document.
+   */
   private function _read_source_row() {
     $this->source_row_number++;
     return fgetcsv($this->input);
   }
 
+  /**
+   * Skip to and read the HXL header row in a source document.
+   */
   private function _read_headers() {
     while ($raw_data = $this->_read_source_row()) {
       $headers = self::_try_header_row($raw_data);
@@ -168,6 +134,9 @@ class HXLReader implements Iterator {
     throw new Exception("HXL hashtag row not found");
   }
 
+  /**
+   * Attempt to read a HXL header row in a source document.
+   */
   private static function _try_header_row($raw_data) {
     $seen_header = false;
     $headers = array();
@@ -194,13 +163,20 @@ class HXLReader implements Iterator {
     }
   }
 
+  /**
+   * Attempt to parse a HXL hashtag.
+   *
+   * @return null if not a properly-formatted hashtag.
+   */
   private static function _parse_hashtag($s) {
     $matches = array();
     if (preg_match('/^(#[a-zA-z0-9_]+)(?:\/([a-zA-Z]{2}))?/', $s, $matches)) {
-      return new HXLHeader($matches[1], @$matches[2]);
+      return new HXLColumn($matches[1], @$matches[2]);
     } else {
       return false;
     }
   }
 
 }
+
+// end

@@ -39,7 +39,7 @@ class HXLReaderTest extends PHPUnit_Framework_TestCase {
    * @depends testData
    */
   public function testTag($value) {
-    $this->assertEquals('#sector', $value->header->tag);
+    $this->assertEquals('#sector', $value->column->tag);
   }
 
   /**
