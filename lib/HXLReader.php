@@ -11,16 +11,45 @@ class HXLHeader {
 
 }
 
-class HXLRow {
+class HXLRow implements Iterator {
   public $data;
   public $row_number;
   public $source_row_number;
+  public $iterator_index = -1;
 
   public function __construct($data, $row_number = null, $source_row_number = null) {
     $this->data = $data;
     $this->row_number = $row_number;
     $this->source_row_number = $source_row_number;
   }
+
+  //
+  // Methods to implement the Iterator interface
+  //
+
+  public function current() {
+    return $this->data[$this->iterator_index];
+  }
+
+  public function key() {
+    return $this->iterator_index;
+  }
+
+  public function next() {
+    $this->iterator_index++;
+    if ($this->iterator_index >= count($this->data)) {
+      $this->iterator_index = -1;
+    }
+  }
+
+  public function rewind() {
+    $this->iterator_index = 0;
+  }
+
+  public function valid() {
+    return ($this->iterator_index > -1);
+  }
+
 }
 
 class HXLValue {

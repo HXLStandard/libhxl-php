@@ -17,7 +17,7 @@ USAGE
 
   foreach ($hxl as $row) {
     printf("Row %d:\n", $row->row_number);
-    foreach ($row->data as $value) {
+    foreach ($row as $value) {
       printf(" %s=%s\n", $value->header->tag, $value->content);
     }
   }
