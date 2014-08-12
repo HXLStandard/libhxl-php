@@ -1,3 +1,28 @@
 Humanitarian Exchange Language (HXL) PHP Library
 
 Started by David Megginson, August 2014
+
+
+DESCRIPTION
+-----------
+
+PHP5 library for parsing HXL-tagged data.  For more information about HXL, see http://docs.hdx.rwlabs.org/hxl
+
+
+USAGE
+-----
+
+  $input = fopen('MyFile.csv', 'r');
+  $hxl = new HXLReader($input);
+
+  while ($row = $hxl->read()) {
+    foreach ($row['data'] as $value) {
+      printf("%s=%s\n", $value['hxl_tag'], $value['content']);
+    }
+  }
+
+
+REQUIREMENTS
+------------
+
+PHP5.  PHPUnit to run unit tests.
