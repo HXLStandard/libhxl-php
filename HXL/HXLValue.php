@@ -1,7 +1,5 @@
 <?php
 
-require_once(__DIR__ . '/HXLColumn.php');
-
 /**
  * A single HXL value at the intersection of a row and column.
  *

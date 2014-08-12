@@ -1,9 +1,5 @@
 <?php
 
-require_once(__DIR__ . '/HXLColumn.php');
-require_once(__DIR__ . '/HXLRow.php');
-require_once(__DIR__ . '/HXLValue.php');
-
 /**
  * Read HXL data from a CSV file.
  *

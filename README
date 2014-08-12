@@ -12,6 +12,8 @@ PHP5 library for parsing HXL-tagged data.  For more information about HXL, see h
 USAGE
 -----
 
+  require_once('HXL/HXL.php');
+
   $input = fopen('MyFile.csv', 'r');
   $hxl = new HXLReader($input);
 
