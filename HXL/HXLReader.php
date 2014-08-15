@@ -14,7 +14,6 @@ class HXLReader implements Iterator {
   private $headers;
   private $source_row_number = -1;
   private $row_number = -1;
-
   private $last_header_row = null;
   private $current_row = null;
 
@@ -35,22 +34,24 @@ class HXLReader implements Iterator {
    * Read a row of HXL data.
    *
    * @return A data structure describing the row, or null if input is finished.
-   * @exception If a row of HXL hashtags isn't found.
+   * @exception If a row of HXL hashtags hasn't been (and can't be) found.
    */
   function read() {
+
+    // Look for the headers first, if we don't already have them.
     if ($this->headers == null) {
       $this->headers = $this->_read_headers($this->input);
     }
 
+    // Read a row from the source CSV
     $this->row_number++;
     $raw_data = $this->_read_source_row();
-
     if ($raw_data == null) {
       return null;
     }
 
+    // Sort the raw data into a row of HXLValue objects
     $data = array();
-
     $col_number = -1;
     foreach ($raw_data as $i => $content) {
       if (@$this->headers[$i]) {
