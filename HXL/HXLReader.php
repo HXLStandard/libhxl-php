@@ -54,7 +54,17 @@ class HXLReader implements Iterator {
     $data = array();
     $col_number = -1;
     foreach ($raw_data as $i => $content) {
-      if (@$this->headers[$i]) {
+      $colSpec = @$this->headers[$i];
+      if ($colSpec) {
+        if ($colSpec->fixedColumn) {
+        $col_number++;
+          array_push($data, new HXLValue(
+            $colSpec->fixedColumn,
+            $colSpec->column->source_text,
+            $col_number,
+            $i
+          ));
+        }
         $col_number++;
         array_push($data, new HXLValue(
           $this->headers[$i]->column,
