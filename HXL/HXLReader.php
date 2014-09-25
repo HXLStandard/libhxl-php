@@ -57,7 +57,7 @@ class HXLReader implements Iterator {
       if (@$this->headers[$i]) {
         $col_number++;
         array_push($data, new HXLValue(
-          $this->headers[$i],
+          $this->headers[$i]->column,
           $raw_data[$i],
           $col_number,
           $i
@@ -143,26 +143,26 @@ class HXLReader implements Iterator {
    */
   private function _try_header_row($raw_data) {
     $seen_header = false;
-    $columns = array();
+    $colSpecs = array();
 
     foreach ($raw_data as $i => $s) {
       $s = trim($s);
       if ($s) {
-        $column = self::_parse_hashtag($s);
-        if ($column) {
+        $colSpec = self::_parse_hashtag($s);
+        if ($colSpec) {
           $seen_header = true;
-          $column->source_text = $this->last_header_row[$i];
+          $colSpec->column->source_text = $this->last_header_row[$i];
         } else {
           return null;
         }
       } else {
-        $column = null;
+        $colSpec = null;
       }
-      array_push($columns, $column);
+      array_push($colSpecs, $colSpec);
     }
 
     if ($seen_header) {
-      return $columns;
+      return $colSpecs;
     } else {
       return null;
     }
@@ -185,7 +185,7 @@ class HXLReader implements Iterator {
       } else {
         $colSpec = new HXLColSpec($col1);
       }
-      return new HXLColumn($matches[1], @$matches[2]);
+      return $colSpec;
     } else {
       return false;
     }
