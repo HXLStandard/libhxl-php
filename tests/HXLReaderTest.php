@@ -31,22 +31,31 @@ class HXLReaderTest extends PHPUnit_Framework_TestCase {
    * @depends testRead
    */
   public function testData($data) {
-    $this->assertEquals(4, count($data));
+    $this->assertEquals(6, count($data));
     return $data[0];
   }
 
   /**
    * @depends testData
    */
-  public function testSourceTest(HXLValue $value) {
+  public function testSourceText(HXLValue $value) {
     $this->assertEquals('Sector/Cluster', $value->column->source_text);
   }
 
+
   /**
-   * @depends testData
+   * @depends testRead
    */
-  public function testTag(HXLValue $value) {
-    $this->assertEquals('#sector', $value->column->tag);
+  public function testTag($data) {
+    $this->assertEquals('#sector', $data[0]->column->tag);
+  }
+
+  /**
+   * @depends testRead
+   */
+  public function testComplexTag($data) {
+    $this->assertEquals('#sex', $data[4]->column->tag);
+    $this->assertEquals('#targeted_num', $data[5]->column->tag);
   }
 
   /**
