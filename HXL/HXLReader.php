@@ -174,8 +174,17 @@ class HXLReader implements Iterator {
    * @return null if not a properly-formatted hashtag.
    */
   private static function _parse_hashtag($s) {
+    static $tag_regexp = '(#[a-zA-z0-9_]+)(?:\/([a-zA-Z]{2}))?';
     $matches = array();
-    if (preg_match('/^(#[a-zA-z0-9_]+)(?:\/([a-zA-Z]{2}))?/', $s, $matches)) {
+    if (preg_match("/^\s*$tag_regexp(?:\s*\+\s*$tag_regexp)?\s*\$/", $s, $matches)) {
+      $col1 = new HXLColumn($matches[1], @$matches[2]);
+      $col2 = null;
+      if (@$matches[3]) {
+        $col2 = new HXLColumn($matches[3], @$matches[4]);
+        $colSpec = new HXLColSpec($col2, $col1);
+      } else {
+        $colSpec = new HXLColSpec($col1);
+      }
       return new HXLColumn($matches[1], @$matches[2]);
     } else {
       return false;
