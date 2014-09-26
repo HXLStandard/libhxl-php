@@ -23,15 +23,16 @@ class HXLTableSpec {
   }
 
   /**
-   * Test whether this table uses compact disaggregation.
+   * Count the number of compact disaggregation columns.
    */
-  public function hasCompactDisaggregation() {
+  public function getDisaggregationCount() {
+    $n = 0;
     foreach ($this->colSpecs as $colSpec) {
       if ($colSpec->fixedColumn) {
-        return true;
+        $n++;
       }
     }
-    return false;
+    return $n;
   }
 
 }

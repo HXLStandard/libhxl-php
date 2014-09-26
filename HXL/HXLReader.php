@@ -19,7 +19,8 @@ class HXLReader implements Iterator {
   private $last_header_row = null;
   private $current_row = null;
 
-  private $raw_row = null;
+  private $raw_data = null;
+  private $disaggregation_count;
 
   /**
    * Public constructor.
@@ -45,19 +46,21 @@ class HXLReader implements Iterator {
     // Look for the headers first, if we don't already have them.
     if ($this->tableSpec == null) {
       $this->tableSpec = $this->_read_tableSpec($this->input);
+      $this->disaggregation_count = $this->tableSpec->getDisaggregationCount();
     }
 
     // Read a row from the source CSV
     $this->row_number++;
-    $raw_data = $this->_read_source_row();
-    if ($raw_data == null) {
+
+    $this->raw_data = $this->_read_source_row();
+    if ($this->raw_data == null) {
       return null;
     }
 
     // Sort the raw data into a row of HXLValue objects
     $data = array();
     $col_number = -1;
-    foreach ($raw_data as $i => $content) {
+    foreach ($this->raw_data as $i => $content) {
       $colSpec = @$this->tableSpec->colSpecs[$i];
       if ($colSpec->fixedColumn) {
         $col_number++;
@@ -71,7 +74,7 @@ class HXLReader implements Iterator {
       $col_number++;
       array_push($data, new HXLValue(
         $this->tableSpec->colSpecs[$i]->column,
-        $raw_data[$i],
+        $this->raw_data[$i],
         $col_number,
         $i
       ));
