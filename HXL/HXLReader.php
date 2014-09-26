@@ -47,14 +47,18 @@ class HXLReader implements Iterator {
     if ($this->tableSpec == null) {
       $this->tableSpec = $this->_read_tableSpec($this->input);
       $this->disaggregation_count = $this->tableSpec->getDisaggregationCount();
+      $this->disaggregation_pos = 0;
     }
 
-    // Read a row from the source CSV
-    $this->row_number++;
+    if ($this->disaggregation_pos >= $this->disaggregation_count || !$this->raw_data) {
+      // Read a row from the source CSV
+      $this->row_number++;
 
-    $this->raw_data = $this->_read_source_row();
-    if ($this->raw_data == null) {
-      return null;
+      $this->raw_data = $this->_read_source_row();
+      if ($this->raw_data == null) {
+        return null;
+      }
+      $this->disaggregation_pos = 0;
     }
 
     // Sort the raw data into a row of HXLValue objects
@@ -80,6 +84,7 @@ class HXLReader implements Iterator {
       ));
     }
 
+    $this->disaggregation_pos++;
     return new HXLRow($data, $this->row_number, $this->source_row_number);
   }
 
