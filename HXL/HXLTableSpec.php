@@ -12,7 +12,7 @@ class HXLTableSpec {
   public $colSpecs;
 
   public function __construct() {
-    $colSpecs = array();
+    $this->colSpecs = array();
   }
 
   public function add($colSpec) {
