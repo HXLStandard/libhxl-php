@@ -48,7 +48,7 @@ class HXLReader implements Iterator {
     // Look for the headers first, if we don't already have them.
     if ($this->headers == null) {
       $this->headers = $this->_read_headers($this->input);
-      foreach ($this->headers as $colspec) {
+      foreach ($this->headers->colSpecs as $colspec) {
         if ($colspec && $colspec->fixedColumn) {
           $disaggregation_count++;
         }
@@ -67,7 +67,7 @@ class HXLReader implements Iterator {
     $col_number = -1;
 
     foreach ($raw_data as $i => $content) {
-      $colSpec = @$this->headers[$i];
+      $colSpec = @$this->headers->colSpecs[$i];
       if ($colSpec) {
         if ($colSpec->fixedColumn) {
           $col_number++;
@@ -80,7 +80,7 @@ class HXLReader implements Iterator {
         }
         $col_number++;
         array_push($data, new HXLValue(
-          $this->headers[$i]->column,
+          $this->headers->colSpecs[$i]->column,
           $raw_data[$i],
           $col_number,
           $i
@@ -166,7 +166,7 @@ class HXLReader implements Iterator {
    */
   private function _try_header_row($raw_data) {
     $seen_header = false;
-    $colSpecs = array();
+    $tableSpec = new HXLTableSpec();
 
     foreach ($raw_data as $i => $s) {
       $s = trim($s);
@@ -181,11 +181,11 @@ class HXLReader implements Iterator {
       } else {
         $colSpec = null;
       }
-      array_push($colSpecs, $colSpec);
+      $tableSpec->add($colSpec);
     }
 
     if ($seen_header) {
-      return $colSpecs;
+      return $tableSpec;
     } else {
       return null;
     }
