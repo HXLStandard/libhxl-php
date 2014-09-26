@@ -19,9 +19,10 @@ class HXLReaderTest extends PHPUnit_Framework_TestCase {
    */
   public function testRead(HXLReader $reader) {
     $row = $reader->read();
+    $row = $reader->read();
     $this->assertNotNull($row);
 
-    $this->assertEquals(0, $row->row_number);
+    $this->assertEquals(1, $row->row_number);
     $this->assertEquals(3, $row->source_row_number);
 
     return $row->data;
@@ -56,6 +57,14 @@ class HXLReaderTest extends PHPUnit_Framework_TestCase {
   public function testComplexTag($data) {
     $this->assertEquals('#sex', $data[4]->column->tag);
     $this->assertEquals('#targeted_num', $data[5]->column->tag);
+  }
+
+  /**
+   * @depends testRead
+   */
+  public function testComplexValue($data) {
+    $this->assertEquals('Females', $data[4]->content);
+    $this->assertEquals('100', $data[5]->content);
   }
 
   /**

@@ -10,11 +10,14 @@
  */
 class HXLColSpec {
 
+  public $source_col_number;
+
   public $column;
 
   public $fixedColumn;
 
-  public function __construct($column = null, $fixedColumn = null) {
+  public function __construct($source_col_number, $column = null, $fixedColumn = null) {
+    $this->source_col_number = $source_col_number;
     $this->column = $column;
     $this->fixedColumn = $fixedColumn;
   }
