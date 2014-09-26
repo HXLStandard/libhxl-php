@@ -57,27 +57,24 @@ class HXLReader implements Iterator {
     // Sort the raw data into a row of HXLValue objects
     $data = array();
     $col_number = -1;
-
     foreach ($raw_data as $i => $content) {
       $colSpec = @$this->tableSpec->colSpecs[$i];
-      if ($colSpec) {
-        if ($colSpec->fixedColumn) {
-          $col_number++;
-          array_push($data, new HXLValue(
-            $colSpec->fixedColumn,
-            $colSpec->column->source_text,
-            $col_number,
-            $i
-          ));
-        }
+      if ($colSpec->fixedColumn) {
         $col_number++;
         array_push($data, new HXLValue(
-          $this->tableSpec->colSpecs[$i]->column,
-          $raw_data[$i],
+          $colSpec->fixedColumn,
+          $colSpec->column->source_text,
           $col_number,
           $i
         ));
       }
+      $col_number++;
+      array_push($data, new HXLValue(
+        $this->tableSpec->colSpecs[$i]->column,
+        $raw_data[$i],
+        $col_number,
+        $i
+      ));
     }
 
     return new HXLRow($data, $this->row_number, $this->source_row_number);
@@ -143,7 +140,7 @@ class HXLReader implements Iterator {
    */
   private function _read_tableSpec() {
     while ($raw_data = $this->_read_source_row()) {
-      $tableSpec = $this->_try_header_row($raw_data);
+      $tableSpec = $this->_try_tableSpec($raw_data);
       if ($tableSpec != null) {
         return $tableSpec;
       } else {
@@ -154,12 +151,13 @@ class HXLReader implements Iterator {
   }
 
   /**
-   * Attempt to read a HXL header row in a source document.
+   * Attempt to read a HXL table spec in a source document.
    */
-  private function _try_header_row($raw_data) {
+  private function _try_tableSpec($raw_data) {
     $seen_header = false;
     $tableSpec = new HXLTableSpec();
 
+    // It's a tag row
     foreach ($raw_data as $i => $s) {
       $s = trim($s);
       if ($s) {
