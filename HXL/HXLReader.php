@@ -166,14 +166,15 @@ class HXLReader implements Iterator {
         $colSpec = self::_parse_hashtag($s);
         if ($colSpec) {
           $seen_header = true;
-          $colSpec->column->source_text = $this->last_header_row[$i];
         } else {
           return null;
         }
-        $tableSpec->add($colSpec);
       } else {
-        $tableSpec->add(new HXLColSpec());
+        $colSpec = new HXLColSpec();
+        $colSpec->column = new HXLColumn();
       }
+      $colSpec->column->source_text = $this->last_header_row[$i];
+      $tableSpec->add($colSpec);
     }
 
     if ($seen_header) {

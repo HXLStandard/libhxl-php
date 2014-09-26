@@ -29,7 +29,7 @@ class HXLColumn {
    * @param $lang The ISO 639 language code (defaults to null, for unspecified)
    * @param $source_text The text of the original header (defaults to null, for unspecified)
    */
-  public function __construct($tag, $lang = null, $source_text = null) {
+  public function __construct($tag = null, $lang = null, $source_text = null) {
     $this->tag = $tag;
     $this->lang = $lang;
     $this->source_text = $source_text;
