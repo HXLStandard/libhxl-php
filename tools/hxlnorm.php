@@ -29,7 +29,7 @@ function write_headers(HXLRow $row) {
   $row_out = array();
   foreach ($row as $value) {
     if ($value->column->tag) {
-      array_push($row_out, $value->column->tag);
+      array_push($row_out, $value->column->getTagSpec());
     }
   }
   fputcsv(STDOUT, $row_out);

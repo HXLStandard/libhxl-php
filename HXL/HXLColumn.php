@@ -35,4 +35,19 @@ class HXLColumn {
     $this->source_text = $source_text;
   }
 
+  /**
+   * Get the full tagspec, including language (if specified).
+   */
+  public function getTagSpec() {
+    if ($this->tag) {
+      if ($this->lang) {
+        return sprintf("%s/%s", $this->tag, $this->lang);
+      } else {
+        return $this->tag;
+      }
+    } else {
+      return null;
+    }
+  }
+
 }
