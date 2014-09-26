@@ -1,5 +1,7 @@
 <?php
 
+require_once(__DIR__ . '/HXL.php');
+
 /**
  * Read HXL data from a CSV file.
  *
@@ -16,6 +18,9 @@ class HXLReader implements Iterator {
   private $row_number = -1;
   private $last_header_row = null;
   private $current_row = null;
+
+  private $disaggregation_count = 0;
+  private $raw_row = null;
 
   /**
    * Public constructor.
@@ -38,9 +43,16 @@ class HXLReader implements Iterator {
    */
   function read() {
 
+    $disaggregation_count = 0;
+
     // Look for the headers first, if we don't already have them.
     if ($this->headers == null) {
       $this->headers = $this->_read_headers($this->input);
+      foreach ($this->headers as $colspec) {
+        if ($colspec && $colspec->fixedColumn) {
+          $disaggregation_count++;
+        }
+      }
     }
 
     // Read a row from the source CSV
@@ -53,11 +65,12 @@ class HXLReader implements Iterator {
     // Sort the raw data into a row of HXLValue objects
     $data = array();
     $col_number = -1;
+
     foreach ($raw_data as $i => $content) {
       $colSpec = @$this->headers[$i];
       if ($colSpec) {
         if ($colSpec->fixedColumn) {
-        $col_number++;
+          $col_number++;
           array_push($data, new HXLValue(
             $colSpec->fixedColumn,
             $colSpec->column->source_text,
