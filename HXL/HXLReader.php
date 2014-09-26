@@ -13,7 +13,7 @@ require_once(__DIR__ . '/HXL.php');
 class HXLReader implements Iterator {
 
   private $input;
-  private $headers;
+  private $tableSpec;
   private $source_row_number = -1;
   private $row_number = -1;
   private $last_header_row = null;
@@ -46,9 +46,9 @@ class HXLReader implements Iterator {
     $disaggregation_count = 0;
 
     // Look for the headers first, if we don't already have them.
-    if ($this->headers == null) {
-      $this->headers = $this->_read_headers($this->input);
-      foreach ($this->headers->colSpecs as $colspec) {
+    if ($this->tableSpec == null) {
+      $this->tableSpec = $this->_read_tableSpec($this->input);
+      foreach ($this->tableSpec->colSpecs as $colspec) {
         if ($colspec && $colspec->fixedColumn) {
           $disaggregation_count++;
         }
@@ -67,7 +67,7 @@ class HXLReader implements Iterator {
     $col_number = -1;
 
     foreach ($raw_data as $i => $content) {
-      $colSpec = @$this->headers->colSpecs[$i];
+      $colSpec = @$this->tableSpec->colSpecs[$i];
       if ($colSpec) {
         if ($colSpec->fixedColumn) {
           $col_number++;
@@ -80,7 +80,7 @@ class HXLReader implements Iterator {
         }
         $col_number++;
         array_push($data, new HXLValue(
-          $this->headers->colSpecs[$i]->column,
+          $this->tableSpec->colSpecs[$i]->column,
           $raw_data[$i],
           $col_number,
           $i
@@ -149,11 +149,11 @@ class HXLReader implements Iterator {
   /**
    * Skip to and read the HXL header row in a source document.
    */
-  private function _read_headers() {
+  private function _read_tableSpec() {
     while ($raw_data = $this->_read_source_row()) {
-      $headers = $this->_try_header_row($raw_data);
-      if ($headers != null) {
-        return $headers;
+      $tableSpec = $this->_try_header_row($raw_data);
+      if ($tableSpec != null) {
+        return $tableSpec;
       } else {
         $this->last_header_row = $raw_data;
       }
