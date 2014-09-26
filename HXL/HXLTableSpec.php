@@ -35,4 +35,19 @@ class HXLTableSpec {
     return $n;
   }
 
+  public function getFixedPos($n) {
+    $pos = 0;
+    foreach ($this->colSpecs as $colSpec) {
+      if ($colSpec->fixedColumn) {
+        if ($n == 0) {
+          return $pos;
+        } else {
+          $n--;
+        }
+      }
+      $pos++;
+    }
+    return -1;
+  }
+
 }

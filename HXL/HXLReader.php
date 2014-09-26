@@ -64,24 +64,36 @@ class HXLReader implements Iterator {
     // Sort the raw data into a row of HXLValue objects
     $data = array();
     $col_number = -1;
+    $seen_fixed = false;
     foreach ($this->raw_data as $i => $content) {
       $colSpec = @$this->tableSpec->colSpecs[$i];
       if ($colSpec->fixedColumn) {
+        if (!$seen_fixed) {
+          $col_number++;
+          $fixed_pos = $this->tableSpec->getFixedPos($this->disaggregation_pos);
+          array_push($data, new HXLValue(
+            $this->tableSpec->colSpecs[$fixed_pos]->fixedColumn,
+            $this->tableSpec->colSpecs[$fixed_pos]->column->source_text,
+            $col_number,
+            $i
+          ));
+          array_push($data, new HXLValue(
+            $this->tableSpec->colSpecs[$fixed_pos]->column,
+            $this->raw_data[$fixed_pos],
+            $col_number,
+            $i
+          ));
+          $seen_fixed = true;
+        }
+      } else {
         $col_number++;
         array_push($data, new HXLValue(
-          $colSpec->fixedColumn,
-          $colSpec->column->source_text,
+          $this->tableSpec->colSpecs[$i]->column,
+          $this->raw_data[$i],
           $col_number,
           $i
         ));
       }
-      $col_number++;
-      array_push($data, new HXLValue(
-        $this->tableSpec->colSpecs[$i]->column,
-        $this->raw_data[$i],
-        $col_number,
-        $i
-      ));
     }
 
     $this->disaggregation_pos++;
