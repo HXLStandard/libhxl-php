@@ -78,7 +78,7 @@ class HXLReader implements Iterator {
           $fixed_pos = $this->tableSpec->getFixedPos($this->disaggregation_pos);
           array_push($data, new HXLValue(
             $this->tableSpec->colSpecs[$fixed_pos]->fixedColumn,
-            $this->tableSpec->colSpecs[$fixed_pos]->column->source_text,
+            $this->tableSpec->colSpecs[$fixed_pos]->fixedValue,
             $col_number,
             $i
           ));
@@ -192,6 +192,13 @@ class HXLReader implements Iterator {
         $colSpec = self::_parse_hashtag($source_col_number, $s);
         if ($colSpec) {
           $seen_header = true;
+          if ($colSpec->fixedColumn) {
+            $colSpec->fixedColumn->source_text = $this->_pretty_tag($colSpec->fixedColumn->tag);
+            $colSpec->column->source_text = $this->_pretty_tag($colSpec->column->tag);
+            $colSpec->fixedValue = $this->last_header_row[$i];
+          } else {
+            $colSpec->column->source_text = $this->last_header_row[$i];
+          }
         } else {
           return null;
         }
@@ -199,7 +206,6 @@ class HXLReader implements Iterator {
         $colSpec = new HXLColSpec($source_col_number);
         $colSpec->column = new HXLColumn();
       }
-      $colSpec->column->source_text = $this->last_header_row[$i];
       $tableSpec->add($colSpec);
     }
 
@@ -231,6 +237,14 @@ class HXLReader implements Iterator {
     } else {
       return false;
     }
+  }
+
+  private static function _pretty_tag($tag) {
+    // TODO try looking up standard tags
+    $tag = preg_replace('/^#/', '', $tag);
+    $tag = preg_replace('/_(date|deg|id|link|num)$/', '', $tag);
+    $tag = preg_replace('/_/', ' ', $tag);
+    return ucfirst($tag);
   }
 
 }

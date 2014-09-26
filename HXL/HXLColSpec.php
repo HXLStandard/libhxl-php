@@ -16,7 +16,9 @@ class HXLColSpec {
 
   public $fixedColumn;
 
-  public function __construct($source_col_number, $column = null, $fixedColumn = null) {
+  public $fixedValue;
+
+  public function __construct($source_col_number, $column = null, $fixedColumn = null, $fixedValue = null) {
     $this->source_col_number = $source_col_number;
     $this->column = $column;
     $this->fixedColumn = $fixedColumn;
