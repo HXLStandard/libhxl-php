@@ -40,7 +40,7 @@ class HXLReaderTest extends PHPUnit_Framework_TestCase {
    * @depends testData
    */
   public function testSourceText(HXLValue $value) {
-    $this->assertEquals('Sector/Cluster', $value->column->source_text);
+    $this->assertEquals('Sector/Cluster', $value->column->headerText);
   }
 
 
@@ -48,15 +48,15 @@ class HXLReaderTest extends PHPUnit_Framework_TestCase {
    * @depends testRead
    */
   public function testTag($data) {
-    $this->assertEquals('#sector', $data[0]->column->tag);
+    $this->assertEquals('#sector', $data[0]->column->hxlTag);
   }
 
   /**
    * @depends testRead
    */
   public function testComplexTag($data) {
-    $this->assertEquals('#sex', $data[4]->column->tag);
-    $this->assertEquals('#targeted_num', $data[5]->column->tag);
+    $this->assertEquals('#sex', $data[4]->column->hxlTag);
+    $this->assertEquals('#targeted_num', $data[5]->column->hxlTag);
   }
 
   /**

@@ -68,7 +68,7 @@ class HXLReader implements Iterator {
       $colSpec = @$this->tableSpec->colSpecs[$i];
 
       // If there's no HXL tag, we don't process the column
-      if (!$colSpec->column->tag) {
+      if (!$colSpec->column->hxlTag) {
         continue;
       }
 
@@ -193,11 +193,11 @@ class HXLReader implements Iterator {
         if ($colSpec) {
           $seen_header = true;
           if ($colSpec->fixedColumn) {
-            $colSpec->fixedColumn->source_text = $this->_pretty_tag($colSpec->fixedColumn->tag);
-            $colSpec->column->source_text = $this->_pretty_tag($colSpec->column->tag);
+            $colSpec->fixedColumn->headerText = $this->_pretty_tag($colSpec->fixedColumn->hxlTag);
+            $colSpec->column->headerText = $this->_pretty_tag($colSpec->column->hxlTag);
             $colSpec->fixedValue = $this->last_header_row[$i];
           } else {
-            $colSpec->column->source_text = $this->last_header_row[$i];
+            $colSpec->column->headerText = $this->last_header_row[$i];
           }
         } else {
           return null;
@@ -239,12 +239,12 @@ class HXLReader implements Iterator {
     }
   }
 
-  private static function _pretty_tag($tag) {
+  private static function _pretty_tag($hxlTag) {
     // TODO try looking up standard tags
-    $tag = preg_replace('/^#/', '', $tag);
-    $tag = preg_replace('/_(date|deg|id|link|num)$/', '', $tag);
-    $tag = preg_replace('/_/', ' ', $tag);
-    return ucfirst($tag);
+    $hxlTag = preg_replace('/^#/', '', $hxlTag);
+    $hxlTag = preg_replace('/_(date|deg|id|link|num)$/', '', $hxlTag);
+    $hxlTag = preg_replace('/_/', ' ', $hxlTag);
+    return ucfirst($hxlTag);
   }
 
 }

@@ -19,8 +19,8 @@ function write_headers(HXLRow $row) {
   // header row
   $row_out = array();
   foreach ($row as $value) {
-    if ($value->column->tag) {
-      array_push($row_out, $value->column->source_text);
+    if ($value->column->hxlTag) {
+      array_push($row_out, $value->column->headerText);
     }
   }
   fputcsv(STDOUT, $row_out);
@@ -28,8 +28,8 @@ function write_headers(HXLRow $row) {
   // tag row
   $row_out = array();
   foreach ($row as $value) {
-    if ($value->column->tag) {
-      array_push($row_out, $value->column->getTagSpec());
+    if ($value->column->hxlTag) {
+      array_push($row_out, $value->column->getDisplayTag());
     }
   }
   fputcsv(STDOUT, $row_out);
@@ -41,7 +41,7 @@ function write_headers(HXLRow $row) {
 function write_data(HXLRow $row) {
   $row_out = array();
   foreach ($row as $value) {
-    if ($value->column->tag) {
+    if ($value->column->hxlTag) {
       array_push($row_out, $value->content);
     }
   }
