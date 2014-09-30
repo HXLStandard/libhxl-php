@@ -79,7 +79,7 @@ class HXLReaderTest extends PHPUnit_Framework_TestCase {
    */
   public function testColumn(HXLValue $value) {
     $this->assertEquals(0, $value->col_number);
-    $this->assertEquals(1, $value->source_col_number);
+    $this->assertEquals(1, $value->sourceColumnNumber);
   }
 
 }

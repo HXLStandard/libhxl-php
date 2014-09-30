@@ -1,27 +1,53 @@
 <?php
 
 /**
- * A column specification in a HXL file.
+ * A column specification for parsing a HXL CSV file
  *
- * Might be using compact disaggregated notation to represent more
- * than one logical HXL column.
+ * This class captures the way a column is encoded in the input CSV,
+ * which might be different from the logical structure of the HXL data
+ * (for example, if the source is using compact-disaggregated notation
+ * to represent more than one logical HXL column in a single CSV
+ * column). This data isn't normally exposed to a client.
  *
- * Started by David Megginson, September 2014.
+ * @author David Megginson
+ * @since September 2014.
  */
 class HXLColSpec {
 
-  public $source_col_number;
+  /**
+   * Zero-based column number in the original CSV
+   */
+  public $sourceColumnNumber;
 
+  /**
+   * The logical variable column (actual data)
+   */
   public $column;
 
+  /**
+   * The logical fixed-value column, if using compact disaggregated notation
+   */
   public $fixedColumn;
 
+  /**
+   * The fixed value (from the header), if using compact-disaggregated notation
+   */
   public $fixedValue;
 
-  public function __construct($source_col_number, $column = null, $fixedColumn = null, $fixedValue = null) {
-    $this->source_col_number = $source_col_number;
+  /**
+   * Constructor
+   *
+   * @param $sourceColumnNumber
+   * @param $column
+   * @param $fixedColumn
+   * @param $fixedValue
+   */
+  public function __construct($sourceColumnNumber, $column = null, $fixedColumn = null, $fixedValue = null) {
+    $this->sourceColumnNumber = $sourceColumnNumber;
     $this->column = $column;
     $this->fixedColumn = $fixedColumn;
   }
 
 }
+
+// end

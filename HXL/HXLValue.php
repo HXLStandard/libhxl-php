@@ -25,7 +25,7 @@ class HXLValue {
   /**
    * The column number in the original source (zero-based, null if unspecified).
    */
-  public $source_col_number;
+  public $sourceColumnNumber;
 
   /**
    * Public constructor.
@@ -33,12 +33,12 @@ class HXLValue {
    * @param $column The column definition.
    * @param $content The cell content (e.g. a number or string).
    * @param $col_number The logical (HXL) column number (zero-based, null if unspecified).
-   * @param $source_col_number The column number in the original soruce (zero-based, null if unspecified).
+   * @param $sourceColumnNumber The column number in the original soruce (zero-based, null if unspecified).
    */
-  public function __construct(HXLColumn $column, $content, $col_number = null, $source_col_number = null) {
+  public function __construct(HXLColumn $column, $content, $col_number = null, $sourceColumnNumber = null) {
     $this->column = $column;
     $this->content = $content;
     $this->col_number = $col_number;
-    $this->source_col_number = $source_col_number;
+    $this->sourceColumnNumber = $sourceColumnNumber;
   }
 }

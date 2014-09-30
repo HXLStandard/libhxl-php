@@ -184,12 +184,12 @@ class HXLReader implements Iterator {
     $tableSpec = new HXLTableSpec();
 
     // It's a tag row
-    $source_col_number = -1;
+    $sourceColumnNumber = -1;
     foreach ($raw_data as $i => $s) {
-      $source_col_number++;
+      $sourceColumnNumber++;
       $s = trim($s);
       if ($s) {
-        $colSpec = self::_parse_hashtag($source_col_number, $s);
+        $colSpec = self::_parse_hashtag($sourceColumnNumber, $s);
         if ($colSpec) {
           $seen_header = true;
           if ($colSpec->fixedColumn) {
@@ -203,7 +203,7 @@ class HXLReader implements Iterator {
           return null;
         }
       } else {
-        $colSpec = new HXLColSpec($source_col_number);
+        $colSpec = new HXLColSpec($sourceColumnNumber);
         $colSpec->column = new HXLColumn();
       }
       $tableSpec->add($colSpec);
@@ -221,7 +221,7 @@ class HXLReader implements Iterator {
    *
    * @return null if not a properly-formatted hashtag.
    */
-  private static function _parse_hashtag($source_col_number, $s) {
+  private static function _parse_hashtag($sourceColumnNumber, $s) {
     static $tag_regexp = '(#[a-zA-z0-9_]+)(?:\/([a-zA-Z]{2}))?';
     $matches = array();
     if (preg_match("/^\s*$tag_regexp(?:\s*\+\s*$tag_regexp)?\s*\$/", $s, $matches)) {
@@ -229,9 +229,9 @@ class HXLReader implements Iterator {
       $col2 = null;
       if (@$matches[3]) {
         $col2 = new HXLColumn($matches[3], @$matches[4]);
-        $colSpec = new HXLColSpec($source_col_number, $col2, $col1);
+        $colSpec = new HXLColSpec($sourceColumnNumber, $col2, $col1);
       } else {
-        $colSpec = new HXLColSpec($source_col_number, $col1);
+        $colSpec = new HXLColSpec($sourceColumnNumber, $col1);
       }
       return $colSpec;
     } else {
