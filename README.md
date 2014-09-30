@@ -17,7 +17,7 @@ $input = fopen('MyFile.csv', 'r');
 $hxl = new HXLReader($input);
 
 foreach ($hxl as $row) {
-  printf("Row %d:\n", $row->row_number);
+  printf("Row %d:\n", $row->rowNumber);
   foreach ($row as $value) {
     printf(" %s=%s\n", $value->header->tag, $value->content);
   }

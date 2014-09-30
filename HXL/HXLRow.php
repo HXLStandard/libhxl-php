@@ -18,12 +18,12 @@ class HXLRow implements Iterator {
   /**
    * The logical (HXL) row number.
    */
-  public $row_number;
+  public $rowNumber;
 
   /**
    * The row number in the original source file.
    */
-  public $source_row_number;
+  public $sourceRowNumber;
 
   /**
    * Index used by Iterator methods.
@@ -34,14 +34,14 @@ class HXLRow implements Iterator {
    * Public constructor.
    *
    * @param $data An array of HXLValue objects representing the row's content
-   * @param $row_number The logical (HXL) row number, or null if unspecified.
-   * @param $source_row_number The row number in the original source,
+   * @param $rowNumber The logical (HXL) row number, or null if unspecified.
+   * @param $sourceRowNumber The row number in the original source,
    * or null if unspecified.
    */
-  public function __construct($data, $row_number = null, $source_row_number = null) {
+  public function __construct($data, $rowNumber = null, $sourceRowNumber = null) {
     $this->data = $data;
-    $this->row_number = $row_number;
-    $this->source_row_number = $source_row_number;
+    $this->rowNumber = $rowNumber;
+    $this->sourceRowNumber = $sourceRowNumber;
   }
 
   //

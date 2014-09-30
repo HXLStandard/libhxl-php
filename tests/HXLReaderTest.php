@@ -22,8 +22,8 @@ class HXLReaderTest extends PHPUnit_Framework_TestCase {
     $row = $reader->read();
     $this->assertNotNull($row);
 
-    $this->assertEquals(1, $row->row_number);
-    $this->assertEquals(3, $row->source_row_number);
+    $this->assertEquals(1, $row->rowNumber);
+    $this->assertEquals(3, $row->sourceRowNumber);
 
     return $row->data;
   }

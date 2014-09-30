@@ -2,7 +2,10 @@
 /**
  * Top-level file for loading HXL classes.
  *
- * May put an actual class here later (e.g. for PEAR).
+ * Including this file will include all of the HXL classes.
+ *
+ * @author David Megginson
+ * @started August 2014
  */
 
 require_once(__DIR__ . '/HXLTableSpec.php');
